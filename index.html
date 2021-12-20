@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pokemon</title>
+    <style>
+        .columns{display:flex;justify-content: space-around;}
+        .sty{ font-size: 40px;}
+    </style>
+    
+</head>
+<body>
+    <div class="columns">
+        <ul id="pokemonList">
+            <h2> pokemon</h2>
+        </ul>
+        <div id="detail">
+            <h2>Deatil</h2>
+        </div>
+    </div>
+    <h6 class="sty"> Note: To view pokemon details please click the name in "pokemonList" name </h6>
+    <script>
+        fetch('https://pokeapi.co/api/v2/pokemon?limit=50&offset=0')
+        .then(
+            function(response){
+                if(response.status !=200){
+                    console.log('oops..'+response.status)
+                    return
+                }
+                response.json().then(function(data){
+                 const pokemons=data.results
+                 console.log(pokemons)
+                 pokemons.forEach(pokemon =>{
+                     document.getElementById('pokemonList')
+                     .insertAdjacentHTML('beforeend',
+                     `<li onclick='detail("${pokemon.url}")'> ${pokemon.name}</li>`)
+                 } )  
+                })
+            }
+        )
+        .catch(function(err){
+            console.log(err)
+        })
+
+        function detail(url){
+            fetch(url).then(function(response){
+                response.json().then(function(pokemon){
+                console.log(pokemon)
+                document.getElementById('detail').innerHTML=''
+                document.getElementById('detail')
+                     .insertAdjacentHTML('beforeend',
+                     `<h3> ${pokemon.name} </h3>
+                     <img src='${pokemon.sprites.front_default}'>
+                     <p>weight:${pokemon.weight} kg</p>
+                     <p>height:${pokemon.height}m </p>
+                     <p>moves:${pokemon.moves[0].move.name} </p>
+                     <p>ability:${pokemon.abilities[0].ability.name} </p>
+                     `)
+                     
+            })
+        })
+    }
+
+    </script>
+    
+</body>
+</html>
